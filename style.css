@@ -1,0 +1,211 @@
+/* ==========================================================================
+   MAISON CRUMB — 3D BAKERY SCROLL EXPERIENCE
+   Clean, modern, studio-grade aesthetic with full focus on 3D frames
+   ========================================================================== */
+
+:root {
+  --bg-color: #F8F8F6;
+  --text-dark: #1E1A17;
+  --text-sub: #7A726B;
+  --accent-gold: #C08A48;
+  --accent-warm: #8C4B27;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-display: 'Cinzel', serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-color);
+  color: var(--text-dark);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: var(--bg-color);
+  position: relative;
+}
+
+/* ==========================================================================
+   MINIMALIST HEADER
+   ========================================================================== */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 1.25rem 2.5rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(248, 248, 246, 0.8);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.logo-icon {
+  font-size: 1.1rem;
+  color: var(--accent-gold);
+}
+
+.logo-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--text-dark);
+}
+
+.brand-sub {
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  color: var(--text-sub);
+  font-weight: 600;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+}
+
+.nav-link {
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--text-dark);
+  opacity: 0.7;
+  transition: opacity 0.2s, color 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.nav-link:hover, .nav-link.active {
+  opacity: 1;
+  color: var(--accent-warm);
+}
+
+.batch-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--accent-warm);
+  background: rgba(192, 138, 72, 0.12);
+  padding: 0.4rem 0.9rem;
+  border-radius: 99px;
+  border: 1px solid rgba(192, 138, 72, 0.2);
+}
+
+/* ==========================================================================
+   HERO 3D SCROLL SECTION (UNOBSTRUCTED)
+   ========================================================================== */
+.hero-scroll-container {
+  position: relative;
+  /* 380vh scroll track provides smooth scrubbing across the 240 frames */
+  height: 380vh;
+  width: 100%;
+}
+
+.hero-sticky-frame {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-color);
+}
+
+#bakery-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ==========================================================================
+   SUBSEQUENT CONTENT SECTION
+   ========================================================================== */
+.preview-section {
+  position: relative;
+  z-index: 10;
+  background-color: #FFFFFF;
+  padding: 8rem 2rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.preview-section .container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+
+.section-heading h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.section-heading p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-sub);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+@media (max-width: 768px) {
+  .site-header {
+    padding: 1rem 1.25rem;
+  }
+  
+  .nav-links {
+    display: none;
+  }
+}

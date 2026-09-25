@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Dolce &amp; Berry — Artisan Patisserie &amp; Confections</title>
+  <!-- Google Fonts: Italiana & Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <!-- Tailwind CSS v3 with Plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bakery: {
+              cream: '#fdfbf7',
+              warm: '#fbf3ea',
+              butter: '#faeedb',
+              blush: '#fae3e7',
+              lavender: '#dfd5eb',
+              mauve: '#936a7e',
+              rose: '#c85e78',
+              choco: '#3a2723',
+              dark: '#1c1514',
+              gold: '#d4a373'
+            }
+          },
+          fontFamily: {
+            serif: ['"Italiana"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif']
+          },
+          boxShadow: {
+            'soft': '0 20px 45px -15px rgba(116, 75, 68, 0.08), 0 0 1px 1px rgba(0,0,0,0.02)',
+            'floating': '0 30px 60px -12px rgba(90, 48, 55, 0.15), 0 18px 36px -18px rgba(0, 0, 0, 0.08)'
+          }
+        }
+      }
+    };
+  </script>
+  <!-- Custom CSS Styling from code.html -->
+  <style data-purpose="custom-animations">
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(1.2deg); }
+    }
+    @keyframes pulseSlow {
+      0%, 100% { opacity: 0.95; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(0.98); }
+    }
+    .animate-float {
+      animation: gentleFloat 5s ease-in-out infinite;
+    }
+    .animate-float-delayed {
+      animation: gentleFloat 6s ease-in-out 2s infinite;
+    }
+    .glass-nav {
+      background: rgba(253, 251, 247, 0.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+    .hero-card-gradient {
+      background: linear-gradient(135deg, #f7ecd9 0%, #fadfc8 45%, #f7cfdb 100%);
+    }
+    .card-lavender {
+      background: linear-gradient(145deg, #f4eff9 0%, #e8ddf5 100%);
+    }
+    .card-sage {
+      background: linear-gradient(145deg, #edf6f2 0%, #dbebe3 100%);
+    }
+    .card-peach {
+      background: linear-gradient(145deg, #fef1ed 0%, #f7dcd5 100%);
+    }
+    .tilt-card {
+      transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.35s ease;
+      will-change: transform;
+    }
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-on-scroll.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 3D Brownie Scroll Hero Styles */
+    .hero-scroll-wrapper {
+      position: relative;
+      height: 320vh;
+      width: 100%;
+      background-color: #1c1514;
+    }
+    .hero-sticky-stage {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #1c1514;
+    }
+    #brownie-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      image-rendering: -webkit-optimize-contrast;
+    }
+    .hero-bottom-fade {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, rgba(28, 21, 20, 0) 0%, #fbf7f4 100%);
+      pointer-events: none;
+      z-index: 20;
+    }
+  </style>
+</head>
+<body class="bg-[#fbf7f4] text-bakery-dark font-sans antialiased overflow-x-hidden relative selection:bg-bakery-rose selection:text-white">
+
+  <!-- Three.js Floating Pastries Background Scene from code.html -->
+  <div class="fixed inset-0 w-full h-full pointer-events-none z-0 bg-transparent" style="display:block;">
+    <script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+    <div id="threejs-container-ANIMATION_2" style="width:100%;height:100%"></div>
+    <script>
+    (function() {
+      const container = document.getElementById('threejs-container-ANIMATION_2');
+      const width = container.clientWidth || window.innerWidth;
+      const height = container.clientHeight || window.innerHeight;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      camera.position.set(0, 0, 14);
+
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      const ambientLight = new THREE.AmbientLight(0xfff7f0, 1.2);
+      scene.add(ambientLight);
+
+      const mainLight = new THREE.DirectionalLight(0xffeedd, 2.0);
+      mainLight.position.set(5, 10, 7);
+      mainLight.castShadow = true;
+      scene.add(mainLight);
+
+      const fillLight = new THREE.PointLight(0xf7d1d8, 1.8, 30);
+      fillLight.position.set(-6, -2, 5);
+      scene.add(fillLight);
+
+      const backLight = new THREE.DirectionalLight(0xe0f2fe, 1.2);
+      backLight.position.set(0, -6, -5);
+      scene.add(backLight);
+
+      const bakeryWorld = new THREE.Group();
+      scene.add(bakeryWorld);
+
+      const cakeCreamMat = new THREE.MeshPhongMaterial({ color: 0xfffcf5, shininess: 40 });
+      const cakeSpongeMat = new THREE.MeshPhongMaterial({ color: 0xfde3c8, shininess: 20 });
+      const macaronPinkMat = new THREE.MeshPhongMaterial({ color: 0xefa2b4, shininess: 50 });
+      const macaronPurpleMat = new THREE.MeshPhongMaterial({ color: 0xbfa3d6, shininess: 50 });
+      const macaronFillingMat = new THREE.MeshPhongMaterial({ color: 0xfff0fa, shininess: 30 });
+      const berryMat = new THREE.MeshPhongMaterial({ color: 0xbe185d, shininess: 80 });
+      const goldPlateMat = new THREE.MeshStandardMaterial({ color: 0xf5dfb3, roughness: 0.3, metalness: 0.4 });
+      const pearlMat = new THREE.MeshStandardMaterial({ color: 0xfffbf0, roughness: 0.1, metalness: 0.2 });
+
+      function createMacaron(colorMat, fillMat, scale) {
+        const group = new THREE.Group();
+        const topShell = new THREE.Mesh(new THREE.SphereGeometry(1.0, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.5), colorMat);
+        topShell.scale.set(1.0, 0.5, 1.0);
+        topShell.position.y = 0.2;
+        group.add(topShell);
+
+        const topFoot = new THREE.Mesh(new THREE.CylinderGeometry(0.98, 0.95, 0.15, 32), colorMat);
+        topFoot.position.y = 0.14;
+        group.add(topFoot);
+
+        const cream = new THREE.Mesh(new THREE.CylinderGeometry(0.88, 0.88, 0.22, 32), fillMat);
+        cream.position.y = 0.0;
+        group.add(cream);
+
+        const botFoot = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.98, 0.15, 32), colorMat);
+        botFoot.position.y = -0.14;
+        group.add(botFoot);
+
+        const botShell = new THREE.Mesh(new THREE.SphereGeometry(1.0, 32, 16, 0, Math.PI * 2, Math.PI * 0.5, Math.PI * 0.5), colorMat);
+        botShell.scale.set(1.0, 0.5, 1.0);
+        botShell.position.y = -0.2;
+        group.add(botShell);
+
+        group.scale.set(scale, scale, scale);
+        return group;
+      }
+
+      const macarons = [];
+      const m1 = createMacaron(macaronPurpleMat, macaronFillingMat, 0.85);
+      m1.position.set(-1.0, 2.2, 2.5);
+      bakeryWorld.add(m1);
+      macarons.push({ obj: m1, basePos: new THREE.Vector3(-1.0, 2.2, 2.5), speed: 1.2, rotSpeed: 0.008 });
+
+      const m2 = createMacaron(macaronPinkMat, cakeCreamMat, 0.75);
+      m2.position.set(6.2, 2.8, -1.0);
+      bakeryWorld.add(m2);
+      macarons.push({ obj: m2, basePos: new THREE.Vector3(6.2, 2.8, -1.0), speed: 0.9, rotSpeed: -0.01 });
+
+      const m3 = createMacaron(macaronPinkMat, macaronFillingMat, 0.65);
+      m3.position.set(5.5, -2.5, 2.0);
+      bakeryWorld.add(m3);
+      macarons.push({ obj: m3, basePos: new THREE.Vector3(5.5, -2.5, 2.0), speed: 1.5, rotSpeed: 0.012 });
+
+      const pearls = [];
+      const pearlGeo = new THREE.SphereGeometry(0.12, 16, 16);
+      for (let i = 0; i < 16; i++) {
+        const pearl = new THREE.Mesh(pearlGeo, (i % 2 === 0 ? pearlMat : berryMat));
+        const x = (Math.random() - 0.5) * 16;
+        const y = (Math.random() - 0.5) * 12;
+        const z = (Math.random() - 0.5) * 8;
+        pearl.position.set(x, y, z);
+        const s = 0.5 + Math.random() * 0.8;
+        pearl.scale.set(s, s, s);
+        bakeryWorld.add(pearl);
+        pearls.push({ mesh: pearl, originalY: y, speed: 0.5 + Math.random() * 1.5, offset: Math.random() * Math.PI * 2 });
+      }
+
+      let scrollProgress = 0;
+      let targetScroll = 0;
+
+      function onScroll() {
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        if (maxScroll > 0) {
+          targetScroll = window.scrollY / maxScroll;
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      window.addEventListener('resize', () => {
+        const w = container.clientWidth || window.innerWidth;
+        const h = container.clientHeight || window.innerHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+
+      const clock = new THREE.Clock();
+      function animate() {
+        requestAnimationFrame(animate);
+        const elapsedTime = clock.getElapsedTime();
+        scrollProgress += (targetScroll - scrollProgress) * 0.06;
+
+        macarons.forEach((m, idx) => {
+          const bob = Math.sin(elapsedTime * m.speed + idx) * 0.25;
+          m.obj.position.y = m.basePos.y + bob - scrollProgress * 5.0;
+          m.obj.rotation.x += m.rotSpeed;
+          m.obj.rotation.y += m.rotSpeed * 1.5;
+        });
+
+        pearls.forEach(p => {
+          p.mesh.position.y = p.originalY + Math.sin(elapsedTime * p.speed + p.offset) * 0.3 - scrollProgress * 4.0;
+          p.mesh.rotation.y += 0.01;
+        });
+
+        renderer.render(scene, camera);
+      }
+      animate();
+    })();
+    </script>
+  </div>
+
+  <!-- BEGIN: Navigation from code.html -->
+  <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-300" data-purpose="site-navigation" id="main-navigation">
+    <div class="max-w-7xl mx-auto flex items-center justify-between glass-nav px-7 py-3 rounded-full border border-white/60 shadow-soft">
+      <a class="flex items-center gap-2 group" data-purpose="brand-logo" href="#">
+        <span class="font-serif text-2xl md:text-3xl tracking-tight text-bakery-choco font-bold transition-transform group-hover:scale-105 duration-200">
+          Dolce &amp; Berry
+        </span>
+        <span class="inline-block w-2 h-2 rounded-full bg-bakery-rose"></span>
+      </a>
+      <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-bakery-choco/80 tracking-wide" data-purpose="nav-links">
+        <li><a class="hover:text-bakery-rose transition-colors" href="#hero">The Brownie</a></li>
+        <li><a class="hover:text-bakery-rose transition-colors" href="#artisan">Daily Bakes</a></li>
+        <li><a class="hover:text-bakery-rose transition-colors" href="#signature">Celebration Cakes</a></li>
+      </ul>
+      <div class="flex items-center gap-3" data-purpose="nav-actions">
+        <button aria-label="View shopping cart" class="flex items-center gap-2.5 bg-bakery-dark text-white text-xs font-semibold px-5 py-2.5 rounded-full hover:bg-bakery-rose transition-all duration-300 shadow-md hover:shadow-lg active:scale-95" id="cart-btn">
+          <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+          </svg>
+          <span>Cart (<span id="cart-counter">3</span>)</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <!-- END: Navigation -->
+
+  <!-- BEGIN: 3D SCROLL BROWNIE HERO SECTION (UNOBSTRUCTED, HIGH FIDELITY) -->
+  <section id="hero" class="hero-scroll-wrapper relative z-20">
+    <div class="hero-sticky-stage">
+      <!-- High-resolution Canvas without excessive zoom, 100% crisp fit -->
+      <canvas id="brownie-canvas"></canvas>
+    </div>
+    <div class="hero-bottom-fade"></div>
+  </section>
+  <!-- END: 3D SCROLL BROWNIE HERO SECTION -->
+
+  <!-- BEGIN: MainContent from code.html (except previous hero) -->
+  <main class="relative z-10 pt-16 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12 md:space-y-16">
+
+    <!-- BEGIN: BentoProductGrid -->
+    <section class="space-y-6" data-purpose="bento-product-grid" id="artisan">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-bakery-rose">Daily Creations</span>
+          <h2 class="font-serif text-3xl md:text-4xl text-bakery-dark font-bold mt-1">Artisan Patisserie &amp; Petit Fours</h2>
+        </div>
+        <p class="text-sm text-bakery-choco/70 max-w-md">
+          Explore our collection of Parisian inspired macarons, delicate butter sponges, and seasonal mousse cups.
+        </p>
+      </div>
+
+      <!-- Bento Masonry Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <!-- Card 1: Lavender Macaron Tower / Tall Card -->
+        <article class="reveal-on-scroll md:col-span-3 card-lavender rounded-[2rem] p-6 flex flex-col justify-between shadow-soft hover:shadow-floating tilt-card border border-white/80 group cursor-pointer relative overflow-hidden" data-purpose="macaron-tall-card">
+          <div class="absolute -right-8 -top-8 w-36 h-36 bg-white/40 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500"></div>
+          <div class="space-y-3 relative z-10">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-full bg-white/80 text-[11px] font-bold tracking-wider text-bakery-mauve uppercase">Top Pick</span>
+              <span class="text-sm font-bold text-bakery-rose">$24 <span class="text-[10px] text-bakery-choco/60 font-normal">/ box of 6</span></span>
+            </div>
+            <h3 class="font-serif text-2xl text-bakery-dark font-bold leading-tight">Rose &amp; Pistachio Macarons</h3>
+            <p class="text-xs text-bakery-choco/75 leading-relaxed">Infused with Damascus rosewater and crushed Sicilian pistachios.</p>
+          </div>
+          <div class="py-10 my-4 flex items-center justify-center relative">
+            <div class="w-32 h-32 rounded-full bg-white/50 border border-white flex flex-col items-center justify-center text-4xl shadow-inner group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+              🌸
+              <span class="text-[11px] font-bold uppercase tracking-widest text-bakery-mauve mt-1">Crisp &amp; Airy</span>
+            </div>
+          </div>
+          <div class="pt-2 relative z-10 flex items-center justify-between">
+            <button class="add-to-cart-trigger w-full py-2.5 rounded-full bg-bakery-dark text-white text-xs font-semibold hover:bg-bakery-rose transition-colors duration-200 flex items-center justify-center gap-2">
+              <span>+ Quick Add</span>
+            </button>
+          </div>
+        </article>
+
+        <!-- Card 2: Wide Spotlight Card -->
+        <article class="reveal-on-scroll md:col-span-6 glass-card rounded-[2rem] p-7 shadow-soft hover:shadow-floating tilt-card border border-white/80 flex flex-col justify-between group" data-purpose="royal-velvet-feature-card">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-bakery-rose">Exclusive Seasonal Recipe</span>
+              <h3 class="font-serif text-2xl sm:text-3xl text-bakery-dark font-bold mt-1">Royal Velvet Brioche Swirl</h3>
+              <p class="text-xs sm:text-sm text-bakery-choco/80 mt-2 max-w-md">
+                Tahitian vanilla bean mousseline braided in 72-hour slow fermented cultured butter brioche, finished with Valrhona ganache drizzle.
+              </p>
+            </div>
+            <div class="bg-bakery-warm px-3 py-1.5 rounded-full flex items-center gap-1 shrink-0 border border-bakery-butter shadow-sm">
+              <span class="text-amber-500 text-xs">★</span>
+              <span class="text-xs font-bold text-bakery-choco">4.9</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 my-5">
+            <span class="px-3 py-1 rounded-full bg-bakery-butter/60 text-[11px] font-medium text-bakery-choco">Tahitian Vanilla</span>
+            <span class="px-3 py-1 rounded-full bg-bakery-blush/60 text-[11px] font-medium text-bakery-rose">Valrhona 70%</span>
+            <span class="px-3 py-1 rounded-full bg-bakery-lavender/50 text-[11px] font-medium text-bakery-mauve">Cultured Charentes Butter</span>
+          </div>
+          <div class="flex items-center justify-between pt-4 border-t border-bakery-choco/10">
+            <div class="flex items-center bg-white/90 rounded-full border border-bakery-choco/15 px-2 py-1 shadow-sm">
+              <button class="quantity-dec w-7 h-7 rounded-full text-bakery-choco hover:bg-bakery-warm flex items-center justify-center font-bold text-sm transition-colors">−</button>
+              <span class="quantity-val px-3 text-xs font-bold text-bakery-dark">1</span>
+              <button class="quantity-inc w-7 h-7 rounded-full text-bakery-choco hover:bg-bakery-warm flex items-center justify-center font-bold text-sm transition-colors">+</button>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base font-bold text-bakery-choco">$18.50</span>
+              <button class="add-to-cart-trigger px-5 py-2.5 rounded-full bg-bakery-rose text-white text-xs font-semibold hover:bg-bakery-choco shadow-sm hover:shadow-md transition-all">
+                Add to Box
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 3: Macaron Duo -->
+        <article class="reveal-on-scroll md:col-span-3 card-peach rounded-[2rem] p-6 shadow-soft hover:shadow-floating tilt-card border border-white/80 flex flex-col justify-between group" data-purpose="macaron-duo-card">
+          <div>
+            <div class="flex justify-between items-center">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-bakery-rose">Parisian Classic</span>
+              <span class="text-xs font-semibold text-bakery-choco">$16</span>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-bakery-dark mt-2">Violette &amp; Citrus Ganache</h3>
+          </div>
+          <div class="my-6 flex justify-center items-center gap-2">
+            <div class="w-16 h-16 rounded-full bg-white/80 border border-white shadow-sm flex items-center justify-center text-3xl group-hover:-translate-y-1 transition-transform">
+              🟣
+            </div>
+            <div class="w-16 h-16 rounded-full bg-white/80 border border-white shadow-sm flex items-center justify-center text-3xl group-hover:translate-y-1 transition-transform">
+              🟡
+            </div>
+          </div>
+          <button class="add-to-cart-trigger w-full py-2.5 rounded-full bg-white text-bakery-dark font-semibold text-xs border border-bakery-choco/10 hover:bg-bakery-dark hover:text-white shadow-sm transition-colors">
+            Order Selection
+          </button>
+        </article>
+
+        <!-- Card 4: Strawberry Cloud Cupcake Card -->
+        <article class="reveal-on-scroll md:col-span-4 card-sage rounded-[2rem] p-6 shadow-soft hover:shadow-floating tilt-card border border-white/80 flex flex-col justify-between group" data-purpose="cupcake-cloud-card">
+          <div class="space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-800">Fresh Daily</span>
+              <span class="text-xs font-bold text-bakery-dark">$6.50 ea</span>
+            </div>
+            <h3 class="font-serif text-2xl font-bold text-bakery-dark">Strawberry Cloud Cupcake</h3>
+            <p class="text-xs text-bakery-choco/75">Airy chiffon sponge with whipped cream cheese and fresh wild strawberry coulis.</p>
+          </div>
+          <div class="py-8 flex items-center justify-center">
+            <div class="w-24 h-24 rounded-3xl bg-white/80 flex items-center justify-center text-5xl shadow-sm group-hover:scale-110 transition-transform duration-300">
+              🧁
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] text-bakery-choco/70 font-medium">Bake time: 06:00 AM</span>
+            <button class="add-to-cart-trigger px-4 py-2 rounded-full bg-bakery-dark text-white text-xs font-semibold hover:bg-emerald-800 transition-colors">
+              Add Cupcake
+            </button>
+          </div>
+        </article>
+
+        <!-- Card 5: Centerpiece Dessert Display -->
+        <article class="reveal-on-scroll md:col-span-5 bg-gradient-to-br from-white/90 to-bakery-warm/80 backdrop-blur-md rounded-[2rem] p-6 shadow-soft hover:shadow-floating tilt-card border border-white/90 flex flex-col justify-between group" data-purpose="centerpiece-card">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-bakery-rose">Chefs Recommendation</span>
+              <h3 class="font-serif text-2xl font-bold text-bakery-dark">Pastry Tasting Set</h3>
+            </div>
+            <span class="text-lg font-serif font-bold text-bakery-rose">$38</span>
+          </div>
+          <div class="my-6 p-4 rounded-2xl bg-white/60 border border-white/80 flex items-center justify-around">
+            <div class="text-center">
+              <div class="text-3xl mb-1 group-hover:scale-110 transition-transform">🧁</div>
+              <p class="text-[10px] uppercase font-bold text-bakery-choco/70">Chiffon (2)</p>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl mb-1 group-hover:scale-110 transition-transform">🍪</div>
+              <p class="text-[10px] uppercase font-bold text-bakery-choco/70">Macaron (4)</p>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl mb-1 group-hover:scale-110 transition-transform">🍰</div>
+              <p class="text-[10px] uppercase font-bold text-bakery-choco/70">Slice (1)</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="add-to-cart-trigger flex-1 py-2.5 rounded-full bg-bakery-rose text-white text-xs font-semibold hover:bg-bakery-choco shadow-sm transition-colors">
+              Reserve Tasting Set
+            </button>
+            <button class="w-9 h-9 rounded-full bg-white border border-bakery-choco/10 text-bakery-choco flex items-center justify-center hover:bg-bakery-warm transition-colors" title="Gift Wrap Options">
+              🎁
+            </button>
+          </div>
+        </article>
+
+        <!-- Card 6: The Artisan Box -->
+        <article class="reveal-on-scroll md:col-span-3 card-lavender rounded-[2rem] p-6 shadow-soft hover:shadow-floating tilt-card border border-white/80 flex flex-col justify-between group" data-purpose="artisan-custom-box-card">
+          <div class="space-y-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-bakery-mauve">Bespoke Gifting</span>
+            <h3 class="font-serif text-xl font-bold text-bakery-dark">The Atelier Set</h3>
+            <p class="text-xs text-bakery-choco/75 leading-relaxed">
+              Personalized assortment boxed with silk ribbons and custom wax seal stamp.
+            </p>
+          </div>
+          <div class="my-4 text-center">
+            <span class="inline-block px-4 py-2 rounded-xl bg-white/70 text-xs font-medium text-bakery-choco border border-white">
+              Includes Calligraphy Card
+            </span>
+          </div>
+          <button class="add-to-cart-trigger w-full py-2.5 rounded-full bg-bakery-choco text-white text-xs font-semibold hover:bg-bakery-mauve transition-colors">
+            Customize Box
+          </button>
+        </article>
+      </div>
+    </section>
+    <!-- END: BentoProductGrid -->
+
+    <!-- BEGIN: ShowcaseBanner -->
+    <section class="reveal-on-scroll rounded-[2.5rem] bg-gradient-to-r from-[#ecd8ca] via-[#f7e6dc] to-[#f4d5de] p-8 md:p-12 shadow-floating border border-white/70 overflow-hidden relative" data-purpose="gourmet-pastry-banner">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-7 space-y-5">
+          <span class="px-3.5 py-1 rounded-full bg-white/80 backdrop-blur-md text-[11px] font-bold tracking-widest uppercase text-bakery-rose border border-white">
+            Grand Viennoiserie
+          </span>
+          <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-bakery-dark leading-tight">
+            Gourmet Pastries &amp; Delicate Layers
+          </h2>
+          <p class="text-sm sm:text-base text-bakery-choco/80 max-w-xl font-normal leading-relaxed">
+            Every mille-feuille and layered sponge is folded with French butter, rolled over 24 delicate times, and filled with slow-cooked Madagascar vanilla custard.
+          </p>
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <button class="px-7 py-3 rounded-full bg-bakery-dark text-white text-xs sm:text-sm font-semibold hover:bg-bakery-rose transition-colors shadow-md">
+              Order Viennoiserie Box
+            </button>
+            <button class="px-6 py-3 rounded-full bg-white/80 hover:bg-white text-bakery-choco text-xs sm:text-sm font-semibold transition-all border border-bakery-choco/10 backdrop-blur-md">
+              Explore Layer Recipes
+            </button>
+          </div>
+        </div>
+        <div class="lg:col-span-5 flex items-center justify-center relative">
+          <div class="w-full max-w-sm aspect-square rounded-[2rem] bg-white/70 backdrop-blur-md p-6 border border-white/90 shadow-soft flex flex-col justify-between group hover:scale-[1.02] transition-transform duration-300">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-bakery-mauve">Cake of the Week</span>
+              <span class="w-7 h-7 rounded-full bg-white flex items-center justify-center text-xs shadow-sm" title="Expand Details">🔍</span>
+            </div>
+            <div class="my-auto text-center space-y-2">
+              <div class="text-6xl animate-float">🍰</div>
+              <h4 class="font-serif text-2xl font-bold text-bakery-dark">Mille-Feuille Pistache</h4>
+              <p class="text-xs text-bakery-choco/75">Caramelized puff pastry, orange blossom cream, raspberries</p>
+            </div>
+            <div class="pt-3 border-t border-bakery-choco/10 flex items-center justify-between text-xs">
+              <span class="font-semibold text-bakery-choco">Whole Cake (Serves 8-10)</span>
+              <span class="font-bold text-bakery-rose text-sm">$64.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- END: ShowcaseBanner -->
+
+    <!-- BEGIN: SignatureCakesSection -->
+    <section class="space-y-6" data-purpose="signature-cakes-section" id="signature">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-bakery-mauve">Celebration Cakes</span>
+          <h2 class="font-serif text-3xl md:text-4xl text-bakery-dark font-bold mt-1">Signature Celebration Tiers</h2>
+        </div>
+        <p class="text-sm text-bakery-choco/70 max-w-md">
+          Custom sculpted celebration cakes crafted for memorable events, weddings, and milestones.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <article class="reveal-on-scroll card-peach rounded-[2rem] p-7 shadow-soft hover:shadow-floating border border-white/80 flex flex-col sm:flex-row items-center gap-6 group" data-purpose="celebration-cake-card-1">
+          <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl bg-white/80 border border-white flex items-center justify-center text-6xl shrink-0 group-hover:scale-105 transition-transform duration-300">
+            🎂
+          </div>
+          <div class="space-y-2 text-left w-full">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-white text-[10px] font-bold uppercase tracking-wider text-bakery-rose">Signature</span>
+              <span class="font-serif font-bold text-lg text-bakery-choco">$85</span>
+            </div>
+            <h3 class="font-serif text-2xl font-bold text-bakery-dark">Cascading Berry Melange</h3>
+            <p class="text-xs text-bakery-choco/75 leading-relaxed">
+              Three-tier vanilla sponge soaked with elderflower syrup, filled with fresh raspberry compote and Swiss meringue buttercream.
+            </p>
+            <div class="pt-2 flex items-center gap-3">
+              <button class="add-to-cart-trigger px-5 py-2 rounded-full bg-bakery-rose text-white text-xs font-semibold hover:bg-bakery-choco transition-colors">
+                Order Cake
+              </button>
+              <button class="text-xs font-medium text-bakery-choco/80 underline underline-offset-4 hover:text-bakery-rose">
+                Custom Inscription
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="reveal-on-scroll card-lavender rounded-[2rem] p-7 shadow-soft hover:shadow-floating border border-white/80 flex flex-col sm:flex-row items-center gap-6 group" data-purpose="celebration-cake-card-2">
+          <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl bg-white/80 border border-white flex items-center justify-center text-6xl shrink-0 group-hover:scale-105 transition-transform duration-300">
+            🧁
+          </div>
+          <div class="space-y-2 text-left w-full">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-white text-[10px] font-bold uppercase tracking-wider text-bakery-mauve">Limited</span>
+              <span class="font-serif font-bold text-lg text-bakery-choco">$72</span>
+            </div>
+            <h3 class="font-serif text-2xl font-bold text-bakery-dark">Lavender Ganache Petit</h3>
+            <p class="text-xs text-bakery-choco/75 leading-relaxed">
+              Dark chocolate biscuit layered with French lavender ganache and topped with handcrafted spun sugar and edible silver pearls.
+            </p>
+            <div class="pt-2 flex items-center gap-3">
+              <button class="add-to-cart-trigger px-5 py-2 rounded-full bg-bakery-choco text-white text-xs font-semibold hover:bg-bakery-mauve transition-colors">
+                Order Cake
+              </button>
+              <button class="text-xs font-medium text-bakery-choco/80 underline underline-offset-4 hover:text-bakery-rose">
+                Flavor Profiles
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+    <!-- END: SignatureCakesSection -->
+
+    <!-- BEGIN: NewsletterSection -->
+    <section class="reveal-on-scroll glass-card rounded-[2rem] p-8 md:p-12 text-center border border-white/80 shadow-soft max-w-4xl mx-auto space-y-4" data-purpose="newsletter-cta">
+      <span class="text-xs font-bold uppercase tracking-widest text-bakery-rose">The Dolce Club</span>
+      <h3 class="font-serif text-3xl md:text-4xl font-bold text-bakery-dark">Receive Weekly Secret Oven Releases</h3>
+      <p class="text-sm text-bakery-choco/75 max-w-lg mx-auto">
+        Join our connoisseur circle to unlock early access to seasonal pastry boxes, holiday tier reservations, and invitations to pastry masterclasses.
+      </p>
+      <form class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3 max-w-md mx-auto" id="newsletter-form" onsubmit="event.preventDefault(); alert('Merci! You have been subscribed to Dolce &amp; Berry.');">
+        <input class="w-full px-5 py-3 rounded-full bg-white/90 border border-bakery-choco/20 text-xs sm:text-sm text-bakery-dark focus:ring-2 focus:ring-bakery-rose focus:outline-none placeholder-bakery-choco/50 shadow-sm" placeholder="Enter your email address" required="" type="email"/>
+        <button class="w-full sm:w-auto px-7 py-3 rounded-full bg-bakery-rose text-white text-xs sm:text-sm font-semibold hover:bg-bakery-choco transition-colors shadow-md shrink-0" type="submit">
+          Subscribe
+        </button>
+      </form>
+    </section>
+    <!-- END: NewsletterSection -->
+
+  </main>
+  <!-- END: MainContent -->
+
+  <!-- BEGIN: Footer from code.html -->
+  <footer class="relative z-10 border-t border-bakery-choco/10 bg-white/60 backdrop-blur-md pt-14 pb-10 px-6" data-purpose="site-footer">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-10 text-bakery-choco/80 text-sm">
+      <div class="space-y-3">
+        <span class="font-serif text-2xl font-bold text-bakery-dark">Dolce &amp; Berry</span>
+        <p class="text-xs text-bakery-choco/70 leading-relaxed">
+          Purveyors of French-inspired luxury confections, celebration tiered cakes, and handcrafted macarons since 2018.
+        </p>
+        <p class="text-xs font-semibold text-bakery-mauve">142 Rue des Gourmandises, Suite 4B</p>
+      </div>
+      <div class="space-y-2">
+        <h5 class="text-xs font-bold uppercase tracking-wider text-bakery-dark">Bakes</h5>
+        <ul class="text-xs space-y-1.5">
+          <li><a class="hover:text-bakery-rose transition-colors" href="#">Wedding &amp; Event Cakes</a></li>
+          <li><a class="hover:text-bakery-rose transition-colors" href="#">Macaron Gift Towers</a></li>
+          <li><a class="hover:text-bakery-rose transition-colors" href="#">Morning Viennoiserie</a></li>
+          <li><a class="hover:text-bakery-rose transition-colors" href="#">Gluten-Friendly Pastries</a></li>
+        </ul>
+      </div>
+      <div class="space-y-2">
+        <h5 class="text-xs font-bold uppercase tracking-wider text-bakery-dark">Bakery Hours</h5>
+        <ul class="text-xs space-y-1 text-bakery-choco/70">
+          <li>Tuesday — Friday: 7:00 AM – 6:00 PM</li>
+          <li>Saturday &amp; Sunday: 8:00 AM – 5:00 PM</li>
+          <li>Monday: Closed for Oven Maintenance</li>
+        </ul>
+      </div>
+      <div class="space-y-2">
+        <h5 class="text-xs font-bold uppercase tracking-wider text-bakery-dark">Cake Concierge</h5>
+        <p class="text-xs text-bakery-choco/70">Have a custom celebration design in mind? Speak with our head pastry chef.</p>
+        <a class="inline-block text-xs font-bold text-bakery-rose hover:underline" href="tel:+18005552377">+1 (800) 555-BERRY</a>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto pt-6 border-t border-bakery-choco/10 flex flex-col sm:flex-row items-center justify-between text-xs text-bakery-choco/60 gap-4">
+      <p>© 2025 Dolce &amp; Berry Patisserie. All rights reserved.</p>
+      <div class="flex gap-6">
+        <a class="hover:text-bakery-rose" href="#">Allergen Information</a>
+        <a class="hover:text-bakery-rose" href="#">Delivery Policy</a>
+        <a class="hover:text-bakery-rose" href="#">Privacy</a>
+      </div>
+    </div>
+  </footer>
+  <!-- END: Footer -->
+
+  <!-- BEGIN: Interactive Scripts from code.html -->
+  <script data-purpose="scroll-animations">
+    document.addEventListener('DOMContentLoaded', () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      });
+
+      document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+        observer.observe(el);
+      });
+    });
+  </script>
+
+  <script data-purpose="card-tilt-and-cart">
+    document.querySelectorAll('.tilt-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -5;
+        const rotateY = ((x - centerX) / centerX) * 5;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+      });
+    });
+
+    let cartTotal = 3;
+    const cartCounterEl = document.getElementById('cart-counter');
+
+    document.querySelectorAll('.add-to-cart-trigger').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        cartTotal += 1;
+        cartCounterEl.innerText = cartTotal;
+
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span>✓ Added!</span>';
+        btn.classList.add('bg-emerald-700');
+
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.classList.remove('bg-emerald-700');
+        }, 1200);
+      });
+    });
+
+    document.querySelectorAll('.quantity-inc').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const valSpan = btn.parentElement.querySelector('.quantity-val');
+        let val = parseInt(valSpan.innerText, 10);
+        valSpan.innerText = val + 1;
+      });
+    });
+
+    document.querySelectorAll('.quantity-dec').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const valSpan = btn.parentElement.querySelector('.quantity-val');
+        let val = parseInt(valSpan.innerText, 10);
+        if (val > 1) {
+          valSpan.innerText = val - 1;
+        }
+      });
+    });
+  </script>
+  <!-- END: Interactive Scripts from code.html -->
+
+  <!-- BEGIN: 3D Brownie Frame Scroll Engine -->
+  <script src="script.js"></script>
+</body>
+</html>
